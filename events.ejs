@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: #fff;
+        }
+
+        /* Hero section with half-screen height */
+        .hero-section {
+            background-image: url('https://png.pngtree.com/thumb_back/fw800/background/20240703/pngtree-event-management-outdoor-image_15934729.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 50vh; /* Half the viewport height */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            text-shadow: 2px 2px 5px #000;
+        }
+
+        .hero-section h1 {
+            font-size: 48px;
+            margin: 0;
+        }
+
+        .search-bar {
+            margin-top: 20px;
+            width: 80%;
+            background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .search-bar input[type="text"] {
+            padding: 10px;
+            width: 70%;
+            border-radius: 5px;
+            border: none;
+            margin-right: 10px;
+        }
+
+        .search-bar button {
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .search-bar button:hover {
+            background-color: #45a049;
+        }
+
+        .container {
+            padding: 20px;
+            background: #fdf9f9;
+            background-image: url('https://thumbs.dreamstime.com/b/festival-event-party-outdoor-blurred-people-background-lights-decoration-holiday-concept-vertical-copy-space-festival-event-302544755.jpg');
+        }
+
+        .container h2 {
+            text-align: center;
+            margin-top: 0;
+        }
+
+        .event-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .event {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            margin: 15px;
+            border-radius: 15px;
+            width: 300px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .event:hover {
+            transform: scale(1.05);
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .book-button {
+            background-color: #FFD700;
+            color: black;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .book-button:hover {
+            background-color: #FFC107;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section (Half Screen with Search Bar) -->
+    <div class="hero-section">
+        <h1>Welcome to Event-Elite</h1>
+        <div class="search-bar">
+            <form method="GET" action="/events">
+                <input type="text" name="search" placeholder="Search for events..." value="<%= searchQuery %>">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Event List Section -->
+    <div class="container">
+        <h2>Our Events</h2>
+        <div class="event-list">
+            <% if (events.length > 0) { %>
+                <% events.forEach(event => { %>
+                    <div class="event">
+                        <h2><%= event.EventName %></h2>
+                        <img src="<%= event.EventImage %>" alt="<%= event.EventName %>">
+                        <p>Estimated Time: <%= event.EventTime %></p>
+                        <p>Description: <%= event.EventDescription %></p>
+                        <p>For more details, contact: <%= event.EventContact %></p>
+                        <a href="/book/<%= event.EventName %>" class="book-button">Book Your Event</a>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <p>No events found.</p>
+            <% } %>
+        </div>
+    </div>
+</body>
+</html>

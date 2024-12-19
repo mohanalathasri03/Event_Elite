@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .payment-container {
+            margin-top: 50px;
+            max-width: 600px;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="payment-container">
+        <h2 class="text-center">Payment for <%= name %></h2>
+        <p class="text-center">Location: <%= location %></p>
+        <p class="text-center">Price: $<%= price %></p>
+        <form action="/payment" method="post">
+            <input type="hidden" name="name" value="<%= name %>">
+            <input type="hidden" name="price" value="<%= price %>">
+            <input type="hidden" name="location" value="<%= location %>">
+            <div class="form-group">
+                <label for="card-element">Credit or debit card</label>
+                <div id="card-element" class="form-control">
+                    <!-- A Stripe Element will be inserted here. -->
+                </div>
+                <!-- Used to display form errors. -->
+                <div id="card-errors" role="alert" class="text-danger mt-2"></div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Submit Payment</button>
+        </form>
+    </div>
+</div>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    var stripe = Stripe('pk_test_TYooMQauvdEDq54NiTphI7jx'); // Replace with your actual Stripe public key
+    var elements = stripe.elements();
+
+    var style = {
+        base: {
+            color: "#32325d",
+            fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+            fontSmoothing: "antialiased",
+            fontSize: "16px",
+            "::placeholder": {
+                color: "#aab7c4"
+            }
+        },
+        invalid: {
+            color: "#fa755a",
+            iconColor: "#fa755a"
+        }
+    };
+
+    var card = elements.create("card", { style: style });
+    card.mount("#card-element");
+
+    card.addEventListener('change', function(event) {
+        var displayError = document.getElementById('card-errors');
+        if (event.error) {
+            displayError.textContent = event.error.message;
+        } else {
+            displayError.textContent = '';
+        }
+    });
+
+    var form = document.querySelector('form');
+    form.addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        const { token, error } = await stripe.createToken(card);
+
+        if (error) {
+            var errorElement = document.getElementById('card-errors');
+            errorElement.textContent = error.message;
+        } else {
+            stripeTokenHandler(token);
+        }
+    });
+
+    function stripeTokenHandler(token) {
+        var form = document.querySelector('form');
+        var hiddenInput = document.createElement('input');
+        hiddenInput.setAttribute('type', 'hidden');
+        hiddenInput.setAttribute('name', 'stripeToken');
+        hiddenInput.setAttribute('value', token.id);
+        form.appendChild(hiddenInput);
+
+        form.submit();
+    }
+</script>
+
+</body>
+</html>
